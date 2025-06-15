@@ -1,0 +1,4 @@
+.env.local
+.env
+cmd/app/app.log
+app.log

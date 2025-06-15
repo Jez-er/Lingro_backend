@@ -1,0 +1,285 @@
+basePath: /api/v1
+definitions:
+  controllers.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  lingro_services.CreateVocabularyRequest:
+    properties:
+      language_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - language_id
+    - user_id
+    type: object
+  repositories.LingroVocabulary:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      language_id:
+        type: integer
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/repositories.User'
+      userID:
+        type: integer
+    required:
+    - language_id
+    type: object
+  repositories.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      isEmailVerified:
+        type: boolean
+      name:
+        type: string
+      password:
+        type: string
+      updatedAt:
+        type: string
+      vocabulary:
+        items:
+          $ref: '#/definitions/repositories.LingroVocabulary'
+        type: array
+    required:
+    - email
+    - name
+    - password
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is a sample server for a Go backend.
+  title: Astral-Bacl-End API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with email
+      parameters:
+      - description: User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: User created successfully'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout user by clearing refresh token cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: Successfully logged out'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Logout
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh access token using refresh token from cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'access_token: New access token'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 'error: Invalid or expired refresh token'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Refresh Tokens
+      tags:
+      - Auth
+  /auth/registration:
+    post:
+      consumes:
+      - application/json
+      description: Registration with email
+      parameters:
+      - description: User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/repositories.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: User created successfully'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Registration
+      tags:
+      - Auth
+  /lingro/vocabulary/:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new vocabulary for a user
+      parameters:
+      - description: Vocabulary Data
+        in: body
+        name: vocabulary
+        required: true
+        schema:
+          $ref: '#/definitions/lingro_services.CreateVocabularyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Word added
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add a new vocabulary
+      tags:
+      - lingro
+      - vocabulary
+  /lingro/vocabulary/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all vocabulary words for a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of vocabulary words
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get vocabulary by user ID
+      tags:
+      - lingro
+      - vocabulary
+  /lingro/vocabulary/{vocabId}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a vocabulary word by its ID
+      parameters:
+      - description: Vocabulary ID
+        in: path
+        name: vocabId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Vocabulary deleted
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid vocabulary ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a vocabulary word
+      tags:
+      - lingro
+      - vocabulary
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: Simple creating user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: User
+      summary: Create a new user
+      tags:
+      - User
+swagger: "2.0"

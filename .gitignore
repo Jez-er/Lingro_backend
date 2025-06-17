@@ -2,3 +2,6 @@
 .env
 cmd/app/app.log
 app.log
+docs/swagger.json
+docs/swagger.yaml
+docs/docs.go

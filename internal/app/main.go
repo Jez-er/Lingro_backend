@@ -27,18 +27,19 @@ func RunServer() {
 	// Initialize Database
 	databse := repositories.RunDB()
 
-	// Initialize middlewares
-	server.Use(LoggerMiddleware())                                         // Logger
-	server.Use(func(c *gin.Context) { c.Set("repos", databse); c.Next() }) // ORM
-
 	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+	AllowOrigins:     []string{"http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"}, 
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+	
+	// Initialize middlewares
+	server.Use(LoggerMiddleware())                                         // Logger
+	server.Use(func(c *gin.Context) { c.Set("repos", databse); c.Next() }) // ORM
+
 
 	// Initialize routes
 	routes.AppRouter(server)

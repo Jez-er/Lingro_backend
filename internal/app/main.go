@@ -24,6 +24,9 @@ func RunServer() {
 	// Initialize config
 	config := config.InitConfig()
 
+	// only in production mode
+	gin.SetMode(gin.ReleaseMode)
+
 	// Initialize Database
 	databse := repositories.RunDB()
 

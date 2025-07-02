@@ -31,24 +31,38 @@ func (vs *LingroWordsService) GetByVocabularyId(vocabID uint) ([]repositories.Li
 	return vs.VocabularyRepository.GetWordsByVocabularyID(vocabID)
 }
 
+func (vs *LingroWordsService) GetById(ID uint) (repositories.LingroWords, error) {
+	wordPtr, err := vs.VocabularyRepository.GetById(ID)
+	if err != nil {
+		return repositories.LingroWords{}, err
+	}
+	if wordPtr == nil {
+		return repositories.LingroWords{}, nil
+	}
+	return *wordPtr, nil
+}
+
 func (vs *LingroWordsService) EditWord(id uint, word EditWordRequest) error {
 	return vs.VocabularyRepository.EditWord(id, word.Word, word.Translate)
 }
 
 func (vs *LingroWordsService) SetScores(wordId uint, scores int) error {
 	var variant string
-	if scores >= 200 {
-		variant = "MASTER"
+	if scores >= 150 {
+		variant = "master"
 	} else if scores >= 50 {
-		variant = "LEARNING"
+		variant = "learning"
 	} else {
-		variant = "NEW"
+		variant = "new"
 	}
 	err := vs.VocabularyRepository.SetScores(wordId, scores)
 	if err != nil {
 		return err
 	}
 	err = vs.VocabularyRepository.UpdateVariant(wordId, repositories.VariantType(variant))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

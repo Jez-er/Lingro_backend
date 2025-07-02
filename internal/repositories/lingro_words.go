@@ -58,6 +58,15 @@ func (vr *VocabularyRepository) GetWordsByVocabularyID(vocID uint) ([]LingroWord
 	return vocabularies, err
 }
 
+func (vr *VocabularyRepository) GetById(wordId uint) (*LingroWords, error) {
+	var word LingroWords
+	err := vr.db.Where("id = ?", wordId).First(&word).Error
+	if err != nil {
+		return nil, err
+	}
+	return &word, nil
+}
+
 func (vr *VocabularyRepository) SetScores(wordId uint, scores int) error {
 	return vr.db.Model(&LingroWords{}).Where("id =?", wordId).Update("scores", scores).Error
 }

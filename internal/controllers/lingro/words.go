@@ -102,6 +102,51 @@ func GetWordsByVocabularyID(context *gin.Context) {
     context.JSON(200, filteredWords)
 }
 
+// @Summary      Get words by vocabulary ID
+// @Description  Retrieves all words for a specific vocabulary, with optional field filtering
+// @Tags         lingro, words
+// @Accept       json
+// @Produce      json
+// @Param        user_id  path  int  true  "Vocabulary ID"
+// @Param        fields   query string false "Comma-separated list of fields to include (id,word,translate,variant,scores)"
+// @Success      200  {array}  map[string]interface{}  "List of words"
+// @Failure      400  {object}  map[string]string  "Invalid user ID"
+// @Failure      500  {object}  map[string]string  "Internal server error"
+// @Router       /lingro/words/{user_id} [get]
+func GetWordsByID(context *gin.Context) {
+		userID := context.Param("word_id")
+
+    fieldsParam := context.DefaultQuery("fields", "id,word,translate,variant,scores")
+    fields := make(map[string]bool)
+    
+    for _, field := range strings.Split(fieldsParam, ",") {
+        fields[strings.TrimSpace(field)] = true
+    }
+
+    db := utils.ORM(context)
+    VocabularyService := lingro_services.NewLingroWordsService(db.LingroWordsRepo)
+
+    userIDUint, err := strconv.ParseUint(userID, 10, 32)
+    if err != nil {
+        print(err.Error())
+        context.JSON(400, gin.H{"error": "Invalid word ID"})
+        return
+    }
+    words, err := VocabularyService.GetById(uint(userIDUint))
+    if err != nil {
+        context.JSON(500, gin.H{"error": err.Error()})
+        return
+    }
+
+	context.JSON(200, gin.H{
+		"id":        words.Id,
+		"word":      words.Word,
+		"translate": words.Translate,
+		"variant":   words.Variant,
+		"scores":    words.Scores,
+	})
+}
+
 // @Summary      Update a word
 // @Description  Updates a word and its translations by word ID
 // @Tags         lingro, words

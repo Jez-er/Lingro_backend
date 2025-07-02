@@ -309,6 +309,299 @@
                 }
             }
         },
+        "/lingro/words/": {
+            "post": {
+                "description": "Adds a new word with translations to a specific vocabulary",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "lingro",
+                    "words"
+                ],
+                "summary": "Add a new word to vocabulary",
+                "parameters": [
+                    {
+                        "description": "Word Data",
+                        "name": "word",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/lingro_services.NewWordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Word added",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/lingro/words/scores/{word_id}/{scores}/": {
+            "put": {
+                "description": "Updates the scores for a word and adjusts its variant accordingly",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "lingro",
+                    "words"
+                ],
+                "summary": "Set scores for a word",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Word ID",
+                        "name": "word_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Scores value",
+                        "name": "scores",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Scores updated",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid word ID or scores",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/lingro/words/{user_id}": {
+            "get": {
+                "description": "Retrieves all words for a specific vocabulary, with optional field filtering",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "lingro",
+                    "words"
+                ],
+                "summary": "Get words by vocabulary ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Vocabulary ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comma-separated list of fields to include (id,word,translate,variant,scores)",
+                        "name": "fields",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of words",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid user ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/lingro/words/{word_id}": {
+            "put": {
+                "description": "Updates a word and its translations by word ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "lingro",
+                    "words"
+                ],
+                "summary": "Update a word",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Word ID",
+                        "name": "word_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated Word Data",
+                        "name": "word",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/lingro_services.EditWordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Word updated",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid word ID or request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes a word by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "lingro",
+                    "words"
+                ],
+                "summary": "Delete a word",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Word ID",
+                        "name": "word_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Word deleted",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid word ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "post": {
                 "description": "Simple creating user",
@@ -361,6 +654,46 @@
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "lingro_services.EditWordRequest": {
+            "type": "object",
+            "required": [
+                "translate",
+                "word"
+            ],
+            "properties": {
+                "translate": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "word": {
+                    "type": "string"
+                }
+            }
+        },
+        "lingro_services.NewWordRequest": {
+            "type": "object",
+            "required": [
+                "translate",
+                "vocabulary_id",
+                "word"
+            ],
+            "properties": {
+                "translate": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "vocabulary_id": {
+                    "type": "integer"
+                },
+                "word": {
+                    "type": "string"
                 }
             }
         },

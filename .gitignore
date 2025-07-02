@@ -5,3 +5,5 @@ app.log
 docs/swagger.json
 docs/swagger.yaml
 docs/docs.go
+
+docker-compose.yml
